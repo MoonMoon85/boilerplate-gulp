@@ -1,42 +1,36 @@
 // Initialize modules
 var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
-var cssnano = require('cssnano');
+const babel = require('gulp-babel');
 
-// Sass task: compiles the style.scss file into style.css
-gulp.task('sass', function(){
-    return gulp.src('app/scss/style.scss')
-        .pipe(sourcemaps.init())
-        .pipe(sass()) // compile SCSS to CSS
-        .pipe(postcss([ autoprefixer(), cssnano() ])) // PostCSS plugins
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('dist')); // put final CSS in dist folder
+// CSS task: compiles the style.css file into style.css
+gulp.task('css', function(){
+  return gulp.src('app/css/style.css')
+    .pipe(postcss([ autoprefixer() ])) // PostCSS plugins
+    .pipe(gulp.dest('dist')); // put final CSS in dist folder
 });
 
 // JS task: concatenates and uglifies JS files to script.js
 gulp.task('js', function(){
-    return gulp.src([
-        'app/js/*.js'
-        //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
-    ])
-        .pipe(concat('all.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('dist'));
+  return gulp.src([
+      'app/js/*.js'
+      //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
+  ])
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
+    .pipe(gulp.dest('dist'));
 });
 
-// Watch task: watch SCSS and JS files for changes
+// Watch task: watch CSS and JS files for changes
 gulp.task('watch', function(){
-    gulp.watch('app/scss/*.scss', gulp.series('sass'));
-    gulp.watch([
-        'app/js/**/*.js'
-        //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
-    ], gulp.series('js'));    
+  gulp.watch('app/css/*.css', gulp.series('css'));
+  gulp.watch([
+      'app/js/**/*.js'
+      //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
+  ], gulp.series('js'));
 });
 
 // Default task
-gulp.task('default', gulp.series('sass', 'js', 'watch'));
+gulp.task('default', gulp.series('css', 'js', 'watch'));
