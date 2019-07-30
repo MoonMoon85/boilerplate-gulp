@@ -4,18 +4,17 @@ var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 const babel = require('gulp-babel');
 
-// CSS task: compiles the style.css file into style.css
+// CSS task: adds prefixes and pipes to dist/
 gulp.task('css', function(){
   return gulp.src('app/css/style.css')
     .pipe(postcss([ autoprefixer() ])) // PostCSS plugins
     .pipe(gulp.dest('dist')); // put final CSS in dist folder
 });
 
-// JS task: concatenates and uglifies JS files to script.js
+// JS task: transplies JS via babel and pipes to dist/
 gulp.task('js', function(){
   return gulp.src([
       'app/js/*.js'
-      //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
   ])
     .pipe(babel({
       presets: ['@babel/env']
@@ -28,7 +27,6 @@ gulp.task('watch', function(){
   gulp.watch('app/css/*.css', gulp.series('css'));
   gulp.watch([
       'app/js/**/*.js'
-      //,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
   ], gulp.series('js'));
 });
 

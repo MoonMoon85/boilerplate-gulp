@@ -1,7 +1,6 @@
 "use strict";
 
-console.log("test");
-var materials = ['Hydrogen', 'Helium', 'Lithium', 'Beryllium'];
-console.log(materials.map(function (material) {
-  return material.length;
-}));
+console.log('[XXX] Project Name (QA)');
+var utils = window.optimizely.get('utils');
+var $ = window.optimizely.get('jquery') || window.jQuery;
+utils.waitForElement('').then(function () {});
